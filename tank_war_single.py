@@ -11,15 +11,17 @@ class TankWarSingle(TankWar):
         self.enemies = None
         self.enemy_bullets = None
 
-    def create_sprite(self):
+    def create_sprite(self, game_type):
+        self.hero = HeroOrEnemy(Settings.HERO_IMAGE_NAME, self.screen, Settings.HERO)
         self.enemies = pygame.sprite.Group()
         self.enemy_bullets = pygame.sprite.Group()
+        self.walls = pygame.sprite.Group()
         for i in range(Settings.ENEMY_COUNT):
             direction = random.randint(0, 3)
             enemy = Enemy(Settings.ENEMY_IMAGES_SINGLE[direction], self.screen)
             enemy.direction = direction
             self.enemies.add(enemy)
-        super(TankWarSingle, self).create_sprite()
+        super(TankWarSingle, self).draw_map(game_type)
 
     def check_keydown(self, event):
         """检查按下按钮的事件"""
@@ -43,7 +45,7 @@ class TankWarSingle(TankWar):
             self.hero.direction = Settings.DOWN
             self.hero.is_moving = True
             self.hero.is_hit_wall = False
-        elif event.key == pygame.K_SPACE:
+        elif event.key == pygame.K_1:
             # 坦克发子弹
             self.hero.shot()
 
@@ -144,7 +146,7 @@ class TankWarSingle(TankWar):
         self.screen.blit(self.hero.image, self.hero.rect)
         self.walls.draw(self.screen)
 
-    def run(self):
-        super(TankWarSingle, self).run()
+    def run(self, game_type):
+        super(TankWarSingle, self).run(game_type)
 
 

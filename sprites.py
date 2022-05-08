@@ -134,15 +134,18 @@ class HeroOrEnemy(TankSprite):
         self.is_hit_wall = False
 
         # 初始化英雄或敌人的位置
-        if person_type:
-            self.rect.centerx = Settings.SCREEN_RECT.centerx + Settings.BOX_RECT.width * 2
+        if self.type:
+            self.rect.centerx = Settings.SCREEN_RECT.centerx - Settings.BOX_RECT.width * 2
             self.rect.top = Settings.SCREEN_RECT.top
         else:
             self.rect.centerx = Settings.SCREEN_RECT.centerx - Settings.BOX_RECT.width * 2
             self.rect.bottom = Settings.SCREEN_RECT.bottom
 
     def __turn(self):
-        self.image = pygame.image.load(Settings.HERO_IMAGES.get(self.direction))
+        if self.type:
+            self.image = pygame.image.load(Settings.ENEMY_IMAGES_DOUBLE.get(self.direction))
+        else:
+            self.image = pygame.image.load(Settings.HERO_IMAGES.get(self.direction))
 
     def hit_wall(self):
         if self.direction == Settings.LEFT and self.rect.left <= 0 or \
@@ -169,7 +172,7 @@ class Enemy(TankSprite):
         self.type = Settings.ENEMY
         self.speed = Settings.ENEMY_SPEED_SINGLE
         self.direction = random.randint(0, 3)
-        self.terminal = float(random.randint(40*2, 40*8))
+        self.terminal = float(random.randint(40 * 2, 40 * 8))
 
     def random_turn(self):
         # 随机转向
@@ -177,11 +180,11 @@ class Enemy(TankSprite):
         directions = [i for i in range(4)]
         directions.remove(self.direction)
         self.direction = directions[random.randint(0, 2)]
-        self.terminal = float(random.randint(40*2, 40*8))
+        self.terminal = float(random.randint(40 * 2, 40 *  8))
         self.image = pygame.image.load(Settings.ENEMY_IMAGES_SINGLE.get(self.direction))
 
     def random_shot(self):
-        shot_flag = random.choice([True] + [False]*59)
+        shot_flag = random.choice([True] + [False] * 59)
         if shot_flag:
             super().shot()
 
