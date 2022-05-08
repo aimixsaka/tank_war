@@ -30,7 +30,9 @@ class BaseSprite(pygame.sprite.Sprite):
 
 
 class Bullet(BaseSprite):
-
+    """
+    子弹类
+    """
     def __init__(self, image_name, screen):
         super().__init__(image_name, screen)
         self.speed = Settings.BULLET_SPEED
@@ -38,7 +40,8 @@ class Bullet(BaseSprite):
 
 class TankSprite(BaseSprite):
     """
-    ImageSprite类，BaseSprite的子类，所有带图片的精灵的父类
+    TankSprite类，BaseSprite的子类，所有带图片的精灵的父类
+    包含坦克的共性
     """
     def __init__(self, image_name, screen):
         super().__init__(image_name, screen)
@@ -49,11 +52,9 @@ class TankSprite(BaseSprite):
 
     def shot(self):
         """
-        射击类，坦克调用该类发射子弹
-        :return:
+        射击，坦克调用该方法发射子弹
         """
-
-        # 把消失的子弹移除
+        # 先把消失的子弹移除
         self.__remove_sprites()
         if not self.is_alive:
             return
@@ -125,7 +126,9 @@ class TankSprite(BaseSprite):
 
 
 class HeroOrEnemy(TankSprite):
-
+    """
+    双人模式下的英雄和敌人的共同父类
+    """
     def __init__(self, image_name, screen, person_type):
         super(HeroOrEnemy, self).__init__(image_name, screen)
         self.type = person_type
@@ -165,7 +168,10 @@ class HeroOrEnemy(TankSprite):
 
 
 class Enemy(TankSprite):
-
+    """
+    单人模式下的敌人，
+    有随机转向和随机发射功能
+    """
     def __init__(self, image_name, screen):
         super().__init__(image_name, screen)
         self.is_hit_wall = False
@@ -180,15 +186,18 @@ class Enemy(TankSprite):
         directions = [i for i in range(4)]
         directions.remove(self.direction)
         self.direction = directions[random.randint(0, 2)]
-        self.terminal = float(random.randint(40 * 2, 40 *  8))
+        self.terminal = float(random.randint(40 * 2, 40 * 8))
         self.image = pygame.image.load(Settings.ENEMY_IMAGES_SINGLE.get(self.direction))
 
     def random_shot(self):
+        # 随机射击
+        # 概率为1/60
         shot_flag = random.choice([True] + [False] * 59)
         if shot_flag:
             super().shot()
 
     def hit_wall_turn(self):
+        # 撞墙后随机转向
         turn = False
         if self.direction == Settings.LEFT and self.rect.left <= 0:
             turn = True
@@ -216,7 +225,9 @@ class Enemy(TankSprite):
 
 
 class Wall(BaseSprite):
-
+    """
+    墙类
+    """
     def __init__(self, image_name, screen):
         super().__init__(image_name, screen)
         self.type = None
@@ -226,6 +237,7 @@ class Wall(BaseSprite):
         pass
 
     def boom(self):
+        # 子弹击中墙时的特效
         pygame.mixer.music.load(Settings.BOOM_MUSIC)
         pygame.mixer.music.play()
         for boom in Settings.BOOMS:
@@ -236,6 +248,7 @@ class Wall(BaseSprite):
         super().kill()
 
     def kill(self):
+        # 击中墙后移除墙
         self.life -= 1
         if not self.life:
             t = Thread(target=self.boom)

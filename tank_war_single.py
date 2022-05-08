@@ -12,6 +12,10 @@ class TankWarSingle(TankWar):
         self.enemy_bullets = None
 
     def create_sprite(self, game_type):
+        """
+        创建单人模式下精灵
+        包括英雄和随机5个敌人
+        """
         self.hero = HeroOrEnemy(Settings.HERO_IMAGE_NAME, self.screen, Settings.HERO)
         self.enemies = pygame.sprite.Group()
         self.enemy_bullets = pygame.sprite.Group()
@@ -133,6 +137,7 @@ class TankWarSingle(TankWar):
                     self.hero.kill()
 
     def update_sprites(self):
+        # 监听
         if self.hero.is_moving:
             self.hero.update()
         self.walls.update()
@@ -147,6 +152,7 @@ class TankWarSingle(TankWar):
         self.walls.draw(self.screen)
 
     def run(self, game_type):
+        # 单人模式类入口
         super(TankWarSingle, self).run(game_type)
 
 

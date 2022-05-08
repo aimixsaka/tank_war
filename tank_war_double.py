@@ -14,6 +14,10 @@ class TankWarDouble(TankWar):
         super(TankWarDouble, self).__init__()
 
     def create_sprite(self, game_type):
+        """
+        创建双人模式下精灵
+        包括英雄和敌人
+        """
         self.enemy = HeroOrEnemy(Settings.ENEMY_IMAGE_NAME, self.screen, Settings.ENEMY)
         self.hero = HeroOrEnemy(Settings.HERO_IMAGE_NAME, self.screen, Settings.HERO)
         self.walls = pygame.sprite.Group()
@@ -164,6 +168,7 @@ class TankWarDouble(TankWar):
                 self.enemy.kill()
 
     def update_sprites(self):
+        # 监听事件
         if self.hero.is_moving:
             self.hero.update()
         if self.enemy.is_moving:
@@ -178,4 +183,5 @@ class TankWarDouble(TankWar):
         self.walls.draw(self.screen)
 
     def run(self, game_type):
+        # 双人模式类入口
         super(TankWarDouble, self).run(game_type)

@@ -3,7 +3,9 @@ from settings import Settings
 
 
 class Common:
-
+    """
+    工具类，提供一些pygame的静态方法
+    """
     @staticmethod
     def init_game():
         """

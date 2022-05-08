@@ -53,6 +53,11 @@ class TankWar(object):
         pass
 
     def run(self, game_type):
+        """
+        运行
+        调用类的入口
+        :param game_type: 游戏类型 会决定地图的绘制矩阵等
+        """
         Common.init_game()
         self.create_sprite(game_type)
         while True and self.hero.is_alive and self.enemy.is_alive and self.game_still:
