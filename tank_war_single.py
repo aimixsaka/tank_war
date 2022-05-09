@@ -10,6 +10,8 @@ class TankWarSingle(TankWar):
         super(TankWarSingle, self).__init__()
         self.enemies = None
         self.enemy_bullets = None
+        self.enemy_count = Settings.ENEMY_COUNT
+        self.enemies_life = True
 
     def create_sprite(self, game_type):
         """
@@ -96,8 +98,8 @@ class TankWarSingle(TankWar):
                     if wall.type == Settings.RED_WALL:
                         wall.kill()
                         bullet.kill()
-                    elif wall.type == Settings.BOSS_WALL:
-                        self.game_still = False
+                    elif wall.type == Settings.HERO_BOSS_WALL:
+                        self.hero.kill()
                     elif wall.type == Settings.IRON_WALL:
                         bullet.kill()
             # 敌方英雄子弹击中墙
@@ -107,8 +109,8 @@ class TankWarSingle(TankWar):
                         if wall.type == Settings.RED_WALL:
                             wall.kill()
                             bullet.kill()
-                        elif wall.type == Settings.BOSS_WALL:
-                            self.game_still = False
+                        elif wall.type == Settings.HERO_BOSS_WALL:
+                            self.hero.kill()
                         elif wall.type == Settings.IRON_WALL:
                             bullet.kill()
 
@@ -127,8 +129,17 @@ class TankWarSingle(TankWar):
                         enemy.move_out_wall(wall)
                         enemy.random_turn()
 
-        # 子弹击中、敌方坦克碰撞、敌我坦克碰撞
-        pygame.sprite.groupcollide(self.hero.bullets, self.enemies, True, True)
+        # 子弹击中敌人，子弹和敌人都消失， 不用这个方法，无法计数
+        # pygame.sprite.groupcollide(self.player2.bullets, self.enemies, True, True)
+
+        # 当敌人数量为0时，敌人life为False
+        for enemy in self.enemies:
+            for bullet in self.hero.bullets:
+                if pygame.sprite.collide_rect(bullet, enemy):
+                    self.enemy_count -= 1
+                    if not self.enemy_count:
+                        self.enemies_life = False
+
         # 敌方子弹击中我方
         for enemy in self.enemies:
             for bullet in enemy.bullets:

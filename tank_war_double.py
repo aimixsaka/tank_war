@@ -18,8 +18,8 @@ class TankWarDouble(TankWar):
         创建双人模式下精灵
         包括英雄和敌人
         """
-        self.enemy = HeroOrEnemy(Settings.ENEMY_IMAGE_NAME, self.screen, Settings.ENEMY)
-        self.hero = HeroOrEnemy(Settings.HERO_IMAGE_NAME, self.screen, Settings.HERO)
+        self.player1 = HeroOrEnemy(Settings.ENEMY_IMAGE_NAME, self.screen, Settings.ENEMY)
+        self.player2 = HeroOrEnemy(Settings.HERO_IMAGE_NAME, self.screen, Settings.HERO)
         self.walls = pygame.sprite.Group()
         super(TankWarDouble, self).draw_map(game_type)
 
@@ -27,84 +27,84 @@ class TankWarDouble(TankWar):
         """检查按下按钮的事件"""
         if event.key == pygame.K_LEFT:
             # 按下左键
-            self.hero.direction = Settings.LEFT
-            self.hero.is_moving = True
-            self.hero.is_hit_wall = False
+            self.player2.direction = Settings.LEFT
+            self.player2.is_moving = True
+            self.player2.is_hit_wall = False
         elif event.key == pygame.K_RIGHT:
             # 按下右键
-            self.hero.direction = Settings.RIGHT
-            self.hero.is_moving = True
-            self.hero.is_hit_wall = False
+            self.player2.direction = Settings.RIGHT
+            self.player2.is_moving = True
+            self.player2.is_hit_wall = False
         elif event.key == pygame.K_UP:
             # 按下上键
-            self.hero.direction = Settings.UP
-            self.hero.is_moving = True
-            self.hero.is_hit_wall = False
+            self.player2.direction = Settings.UP
+            self.player2.is_moving = True
+            self.player2.is_hit_wall = False
         elif event.key == pygame.K_DOWN:
             # 按下下键
-            self.hero.direction = Settings.DOWN
-            self.hero.is_moving = True
-            self.hero.is_hit_wall = False
+            self.player2.direction = Settings.DOWN
+            self.player2.is_moving = True
+            self.player2.is_hit_wall = False
         elif event.key == pygame.K_a:
             # 按下左键
-            self.enemy.direction = Settings.LEFT
-            self.enemy.is_moving = True
-            self.enemy.is_hit_wall = False
+            self.player1.direction = Settings.LEFT
+            self.player1.is_moving = True
+            self.player1.is_hit_wall = False
         elif event.key == pygame.K_d:
             # 按下右键
-            self.enemy.direction = Settings.RIGHT
-            self.enemy.is_moving = True
-            self.enemy.is_hit_wall = False
+            self.player1.direction = Settings.RIGHT
+            self.player1.is_moving = True
+            self.player1.is_hit_wall = False
         elif event.key == pygame.K_w:
             # 按下上键
-            self.enemy.direction = Settings.UP
-            self.enemy.is_moving = True
-            self.enemy.is_hit_wall = False
+            self.player1.direction = Settings.UP
+            self.player1.is_moving = True
+            self.player1.is_hit_wall = False
         elif event.key == pygame.K_s:
             # 按下下键
-            self.enemy.direction = Settings.DOWN
-            self.enemy.is_moving = True
-            self.enemy.is_hit_wall = False
+            self.player1.direction = Settings.DOWN
+            self.player1.is_moving = True
+            self.player1.is_hit_wall = False
         elif event.key == pygame.K_SPACE:
-            self.enemy.shot()
+            self.player1.shot()
         elif event.key == pygame.K_1:
             # 英雄发子弹
-            self.hero.shot()
+            self.player2.shot()
 
     def check_keyup(self, event):
         """检查松开按钮的事件"""
         if event.key == pygame.K_LEFT:
             # 松开左键
-            self.hero.direction = Settings.LEFT
-            self.hero.is_moving = False
+            self.player2.direction = Settings.LEFT
+            self.player2.is_moving = False
         elif event.key == pygame.K_RIGHT:
             # 松开右键
-            self.hero.direction = Settings.RIGHT
-            self.hero.is_moving = False
+            self.player2.direction = Settings.RIGHT
+            self.player2.is_moving = False
         elif event.key == pygame.K_UP:
             # 松开上键
-            self.hero.direction = Settings.UP
-            self.hero.is_moving = False
+            self.player2.direction = Settings.UP
+            self.player2.is_moving = False
         elif event.key == pygame.K_DOWN:
             # 松开下键
-            self.hero.direction = Settings.DOWN
-            self.hero.is_moving = False
+            self.player2.direction = Settings.DOWN
+            self.player2.is_moving = False
         elif event.key == pygame.K_a:
             # 松开左键
-            self.enemy.direction = Settings.LEFT
-            self.enemy.is_moving = False
+            self.player1.direction = Settings.LEFT
+            self.player1.is_moving = False
         elif event.key == pygame.K_d:
             # 松开右键
-            self.enemy.direction = Settings.RIGHT
-            self.enemy.is_moving = False
+            self.player1.direction = Settings.RIGHT
+            self.player1.is_moving = False
         elif event.key == pygame.K_w:
             # 松开上键
-            self.enemy.direction = Settings.UP
-            self.enemy.is_moving = False
+            self.player1.direction = Settings.UP
+            self.player1.is_moving = False
         elif event.key == pygame.K_s:
             # 松开下键
-            self.enemy.direction = Settings.DOWN
-            self.enemy.is_moving = False
+            self.player1.direction = Settings.DOWN
+            self.player1.is_moving = False
 
     def event_handler(self):
         for event in pygame.event.get():
@@ -118,68 +118,76 @@ class TankWarDouble(TankWar):
 
     def check_collide(self):
         # 保证坦克不移出屏幕
-        self.hero.hit_wall()
+        self.player2.hit_wall()
         # 子弹击中墙
         for wall in self.walls:
             # 子弹击中墙
-            for bullet in self.hero.bullets:
+            for bullet in self.player2.bullets:
                 if pygame.sprite.collide_rect(wall, bullet):
                     if wall.type == Settings.RED_WALL:
                         wall.kill()
                         bullet.kill()
-                    elif wall.type == Settings.BOSS_WALL:
-                        self.game_still = False
+                    elif wall.type == Settings.ENEMY_BOSS_WALL:
+                        self.enemy.kill()
+                    elif wall.type == Settings.HERO_BOSS_WALL:
+                        self.player2.kill()
                     elif wall.type == Settings.IRON_WALL:
                         bullet.kill()
-            for bullet in self.enemy.bullets:
+            for bullet in self.player1.bullets:
                 if pygame.sprite.collide_rect(wall, bullet):
                     if wall.type == Settings.RED_WALL:
                         wall.kill()
                         bullet.kill()
-                    elif wall.type == Settings.BOSS_WALL:
-                        self.game_still = False
+                    elif wall.type == Settings.HERO_BOSS_WALL:
+                        self.player2.kill()
+                    elif wall.type == Settings.ENEMY_BOSS_WALL:
+                        self.player1.kill()
                     elif wall.type == Settings.IRON_WALL:
                         bullet.kill()
             # 我方坦克撞墙
-            if pygame.sprite.collide_rect(self.hero, wall):
+            if pygame.sprite.collide_rect(self.player2, wall):
                 # 不可穿越墙
-                if wall.type == Settings.RED_WALL or wall.type == Settings.IRON_WALL or wall.type == Settings.BOSS_WALL:
-                    self.hero.is_hit_wall = True
+                if wall.type == Settings.RED_WALL or wall.type == Settings.IRON_WALL \
+                        or wall.type == Settings.HERO_BOSS_WALL \
+                        or wall.type == Settings.ENEMY_BOSS_WALL:
+                    self.player2.is_hit_wall = True
                     # 移出墙内
-                    self.hero.move_out_wall(wall)
+                    self.player2.move_out_wall(wall)
             # 敌方坦克撞墙
-            if pygame.sprite.collide_rect(self.enemy, wall):
+            if pygame.sprite.collide_rect(self.player1, wall):
                 # 不可穿越墙
-                if wall.type == Settings.RED_WALL or wall.type == Settings.IRON_WALL or wall.type == Settings.BOSS_WALL:
-                    self.enemy.is_hit_wall = True
+                if wall.type == Settings.RED_WALL or wall.type == Settings.IRON_WALL \
+                        or wall.type == Settings.HERO_BOSS_WALL \
+                        or wall.type == Settings.ENEMY_BOSS_WALL:
+                    self.player1.is_hit_wall = True
                     # 移出墙内
-                    self.enemy.move_out_wall(wall)
+                    self.player1.move_out_wall(wall)
         # 子弹击中、敌方坦克碰撞、敌我坦克碰撞
-        pygame.sprite.groupcollide(self.hero.bullets, self.enemy.bullets, True, True)
+        pygame.sprite.groupcollide(self.player2.bullets, self.player1.bullets, True, True)
         # 敌方子弹击中我方
-        for bullet in self.enemy.bullets:
-            if pygame.sprite.collide_rect(bullet, self.hero):
+        for bullet in self.player1.bullets:
+            if pygame.sprite.collide_rect(bullet, self.player2):
                 bullet.kill()
-                self.hero.kill()
+                self.player2.kill()
         # 我方子弹击中敌人
-        for bullet in self.hero.bullets:
-            if pygame.sprite.collide_rect(bullet, self.enemy):
+        for bullet in self.player2.bullets:
+            if pygame.sprite.collide_rect(bullet, self.player1):
                 bullet.kill()
-                self.enemy.kill()
+                self.player1.kill()
 
     def update_sprites(self):
         # 监听事件
-        if self.hero.is_moving:
-            self.hero.update()
-        if self.enemy.is_moving:
-            self.enemy.update()
+        if self.player2.is_moving:
+            self.player2.update()
+        if self.player1.is_moving:
+            self.player1.update()
         self.walls.update()
-        self.hero.bullets.update()
-        self.enemy.bullets.update()
-        self.enemy.bullets.draw(self.screen)
-        self.hero.bullets.draw(self.screen)
-        self.screen.blit(self.hero.image, self.hero.rect)
-        self.screen.blit(self.enemy.image, self.enemy.rect)
+        self.player2.bullets.update()
+        self.player1.bullets.update()
+        self.player1.bullets.draw(self.screen)
+        self.player2.bullets.draw(self.screen)
+        self.screen.blit(self.player2.image, self.player2.rect)
+        self.screen.blit(self.player1.image, self.player1.rect)
         self.walls.draw(self.screen)
 
     def run(self, game_type):

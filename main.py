@@ -1,12 +1,8 @@
-from tank_war_double import TankWarDouble
-from tank_war_single import TankWarSingle
-
+from screen import StartScreen
 """
 启动入口
 """
 if __name__ == '__main__':
-    # tankWar = TankWarSingle()
-    # tankWar.run("S")
-    tankWar = TankWarDouble()
-    tankWar.run("D")
+    start = StartScreen()
+    start.start_screen()
 

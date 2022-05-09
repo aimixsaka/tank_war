@@ -101,7 +101,8 @@ class Settings:
     RED_WALL = 1
     IRON_WALL = 2
     WEED_WALL = 3
-    BOSS_WALL = 5
+    HERO_BOSS_WALL = 5
+    ENEMY_BOSS_WALL = 6
     WALLS = [
         f"resources/images/walls/{file}" for file in os.listdir("resources/images/walls/")
     ]
@@ -110,3 +111,11 @@ class Settings:
     BOOMS = [
         "resources/images/boom/" + file for file in os.listdir("resources/images/boom")
     ]
+
+    # 开始界面的文字和背景图
+    DISPLAY_WIDTH = 1180
+    DISPLAY_HEIGHT = 812
+    WHITE = (255, 255, 255)
+    RED = (255, 0, 0)
+    BG_IMG = "./resources/images/screen/tank.png"
+    BG_MUS = "./resources/musics/startbg.wav"
