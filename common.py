@@ -17,6 +17,9 @@ class Common:
 
     @staticmethod
     def game_over():
+        """
+        游戏结束
+        """
         pygame.quit()
         exit()
 

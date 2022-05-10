@@ -117,6 +117,9 @@ class TankWarDouble(TankWar):
                 TankWarDouble.check_keyup(self, event)
 
     def check_collide(self):
+        """
+        判断撞墙事件，退出事件，死亡事件
+        """
         # 保证坦克不移出屏幕
         self.player2.hit_wall()
         # 子弹击中墙
@@ -128,7 +131,7 @@ class TankWarDouble(TankWar):
                         wall.kill()
                         bullet.kill()
                     elif wall.type == Settings.ENEMY_BOSS_WALL:
-                        self.enemy.kill()
+                        self.player1.kill()
                     elif wall.type == Settings.HERO_BOSS_WALL:
                         self.player2.kill()
                     elif wall.type == Settings.IRON_WALL:

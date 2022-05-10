@@ -117,7 +117,7 @@ class TankWarSingle(TankWar):
             # 我方坦克撞墙
             if pygame.sprite.collide_rect(self.hero, wall):
                 # 不可穿越墙
-                if wall.type == Settings.RED_WALL or wall.type == Settings.IRON_WALL or wall.type == Settings.BOSS_WALL:
+                if wall.type == Settings.RED_WALL or wall.type == Settings.IRON_WALL or wall.type == Settings.HERO_BOSS_WALL:
                     self.hero.is_hit_wall = True
                     # 移出墙内
                     self.hero.move_out_wall(wall)
@@ -125,7 +125,7 @@ class TankWarSingle(TankWar):
             # 敌方坦克撞墙
             for enemy in self.enemies:
                 if pygame.sprite.collide_rect(wall, enemy):
-                    if wall.type == Settings.RED_WALL or wall.type == Settings.IRON_WALL or wall.type == Settings.BOSS_WALL:
+                    if wall.type == Settings.RED_WALL or wall.type == Settings.IRON_WALL or wall.type == Settings.HERO_BOSS_WALL:
                         enemy.move_out_wall(wall)
                         enemy.random_turn()
 
@@ -136,6 +136,8 @@ class TankWarSingle(TankWar):
         for enemy in self.enemies:
             for bullet in self.hero.bullets:
                 if pygame.sprite.collide_rect(bullet, enemy):
+                    bullet.kill()
+                    enemy.kill()
                     self.enemy_count -= 1
                     if not self.enemy_count:
                         self.enemies_life = False

@@ -119,3 +119,6 @@ class Settings:
     RED = (255, 0, 0)
     BG_IMG = "./resources/images/screen/tank.png"
     BG_MUS = "./resources/musics/startbg.wav"
+
+    # 输了时的音乐
+    OVER_MUS = "./resources/musics/over_music.wav"
