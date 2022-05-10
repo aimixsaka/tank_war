@@ -117,8 +117,11 @@ class Settings:
     DISPLAY_HEIGHT = 812
     WHITE = (255, 255, 255)
     RED = (255, 0, 0)
+    GREY = (150, 150, 150)
     BG_IMG = "./resources/images/screen/tank.png"
     BG_MUS = "./resources/musics/startbg.wav"
 
     # 输了时的音乐
     OVER_MUS = "./resources/musics/over_music.wav"
+    # 预备start bgm
+    NEW_START = "./resources/musics/startbgm2.wav"

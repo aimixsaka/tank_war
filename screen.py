@@ -10,7 +10,7 @@ class Button(object):
     伪按钮类
     实际是文字
     """
-    def __init__(self, text, color, font, y=None):
+    def __init__(self, text, color, font_size, y=None):
         """
         设置文字surface，并设置文字坐标
         :param text: 要显示的文本
@@ -18,7 +18,10 @@ class Button(object):
         :param font: 字体对象
         :param y: 提供的y坐标（x坐标通过计算可得
         """
-        self.surface = font.render(text, True, color)
+        self.font_addr = pygame.font.get_default_font()
+        self.font = pygame.font.Font(self.font_addr, font_size)
+
+        self.surface = self.font.render(text, True, color)
 
         self.WIDTH = self.surface.get_width()
         self.HEIGHT = self.surface.get_height()
@@ -51,7 +54,8 @@ class Screen(object):
     屏幕类
     是开始和结束屏幕的父类
     """
-    def __init__(self, width, height, img, font_size):
+    def __init__(self, width, height, img, font_size, single_text, double_text, exit_text, size, single_y,
+                 double_y, exit_y, single_color=Settings.WHITE, double_color=Settings.WHITE, exit_color=Settings.WHITE):
         """
         屏幕共同的初始化
         :param width: 整个背景图片的宽
@@ -64,44 +68,47 @@ class Screen(object):
         self.bg = pygame.image.load(img)
         self.font_addr = pygame.font.get_default_font()
         self.font = pygame.font.Font(self.font_addr, font_size)
+        self.single_text = single_text
+        self.double_text = double_text
+        self.exit_text = exit_text
+        self.size = size
+        self.single_y = single_y
+        self.double_y = double_y
+        self.exit_y = exit_y
+        self.single_color = single_color
+        self.double_color = double_color
+        self.exit_color = exit_color
+        self.single_button = None
+        self.double_button = None
+        self.exit_button = None
 
+    def set_button(self):
+        self.single_button = Button(self.single_text, self.single_color, self.size, self.single_y)
+        self.double_button = Button(self.double_text, self.double_color, self.size, self.double_y)
+        self.exit_button = Button(self.exit_text, self.exit_color, self.size, self.exit_y)
+        self.single_button.display(self.screen)
+        self.double_button.display(self.screen)
+        self.exit_button.display(self.screen)
 
-class StartScreen(Screen):
-    """
-    开始屏幕
-    """
-    def __init__(self):
-        super(StartScreen, self).__init__(Settings.DISPLAY_WIDTH, Settings.DISPLAY_HEIGHT, Settings.BG_IMG, 36)
-
-    def start_screen(self):
-        # 加载音乐和标题
-        pygame.mixer.music.load(Settings.BG_MUS)
-        pygame.mixer.music.play(30)
-        self.screen.blit(self.bg, (0, 0))
-        game_title = self.font.render("BATTLE OF TANKS", True, Settings.WHITE)
-        self.screen.blit(game_title, ((Settings.DISPLAY_WIDTH - game_title.get_width()) // 2, 200))
-        # 加载按钮
-        single_button = Button("Single", Settings.WHITE, self.font, y=400)
-        double_button = Button("Double", Settings.WHITE, self.font, y=450)
-        # 渲染按钮
-        single_button.display(self.screen)
-        double_button.display(self.screen)
-
-        pygame.display.update()
-
+    def check_click_same(self):
         while True:
             # 监听鼠标移动，到文字那就变红
-            if single_button.check_click(pygame.mouse.get_pos()):
-                single_button = Button("Single", Settings.RED, self.font, 400)
+            if self.single_button.check_click(pygame.mouse.get_pos()):
+                self.single_button = Button(self.single_text, Settings.RED, self.size, self.single_y)
             else:
-                single_button = Button("Single", Settings.WHITE, self.font, 400)
-            if double_button.check_click(pygame.mouse.get_pos()):
-                double_button = Button("Double", Settings.RED, self.font, 450)
+                self.single_button = Button(self.single_text, Settings.WHITE, self.size, self.single_y)
+            if self.double_button.check_click(pygame.mouse.get_pos()):
+                self.double_button = Button(self.double_text, Settings.RED, self.size, self.double_y)
             else:
-                double_button = Button("Double", Settings.WHITE, self.font, 450)
+                self.double_button = Button(self.double_text, Settings.WHITE, self.size, self.double_y)
+            if self.exit_button.check_click(pygame.mouse.get_pos()):
+                self.exit_button = Button(self.exit_text, Settings.RED, self.size, self.exit_y)
+            else:
+                self.exit_button = Button(self.exit_text, Settings.WHITE, self.size, self.exit_y)
 
-            single_button.display(self.screen)
-            double_button.display(self.screen)
+            self.single_button.display(self.screen)
+            self.double_button.display(self.screen)
+            self.exit_button.display(self.screen)
             pygame.display.update()
 
             for event in pygame.event.get():
@@ -110,14 +117,36 @@ class StartScreen(Screen):
             # 如果左键被按下
             if pygame.mouse.get_pressed()[0]:
 
-                if single_button.check_click(pygame.mouse.get_pos()):
+                if self.single_button.check_click(pygame.mouse.get_pos()):
                     pygame.quit()
                     tank_war = TankWarSingle()
                     tank_war.run("S")
-                if double_button.check_click(pygame.mouse.get_pos()):
+                if self.double_button.check_click(pygame.mouse.get_pos()):
                     pygame.quit()
                     tank_war = TankWarDouble()
                     tank_war.run("D")
+                if self.exit_button.check_click(pygame.mouse.get_pos()):
+                    Common.game_over()
+
+
+class StartScreen(Screen):
+    """
+    开始屏幕
+    """
+    def __init__(self):
+        super(StartScreen, self).__init__(Settings.DISPLAY_WIDTH, Settings.DISPLAY_HEIGHT, Settings.BG_IMG, 36,
+                                          "Single", "Double", "Exit", 33, 400, 450, 500)
+
+    def start_screen(self):
+        # 加载音乐和标题
+        pygame.mixer.music.load(Settings.NEW_START)
+        pygame.mixer.music.play(30)
+        self.screen.blit(self.bg, (0, 0))
+        game_title = self.font.render("BATTLE OF TANKS", True, Settings.WHITE)
+        self.screen.blit(game_title, ((Settings.DISPLAY_WIDTH - game_title.get_width()) // 2, 200))
+        # 加载按钮
+        super().set_button()
+        super().check_click_same()
 
 
 class AfterScreen(Screen):
@@ -126,68 +155,63 @@ class AfterScreen(Screen):
     包括输和赢
     """
     def __init__(self):
-        super(AfterScreen, self).__init__(Settings.DISPLAY_WIDTH, Settings.DISPLAY_HEIGHT, Settings.BG_IMG, 72)
+        super(AfterScreen, self).__init__(Settings.DISPLAY_WIDTH, Settings.DISPLAY_HEIGHT, Settings.BG_IMG, 72,
+                                          "AgainSingle", "AgainDouble", "Exit", 40, 390, 470, 630)
+        self.home_button = None
+        self.again_single_button = None
+        self.again_double_button = None
 
-    def set_same_button(self):
+    def start_screen(self):
         # 设置输赢的页面按钮
-        again_single_button = Button("AgainSingle", Settings.WHITE, self.font, y=390)
-        again_double_button = Button("AgainDouble", Settings.WHITE, self.font, y=470)
-        home_button = Button("Home", Settings.WHITE, self.font, y=550)
-        exit_button = Button("Exit", Settings.WHITE, self.font, y=630)
-
-        again_single_button.display(self.screen)
-        again_double_button.display(self.screen)
-        home_button.display(self.screen)
-        exit_button.display(self.screen)
-
-        pygame.display.update()
+        super(AfterScreen, self).set_button()
+        self.home_button = Button("Home", Settings.WHITE, self.size, 550)
+        self.home_button.display(self.screen)
 
         while True:
-            if again_single_button.check_click(pygame.mouse.get_pos()):
-                again_single_button = Button("AgainSingle", Settings.RED, self.font, 390)
+            # 监听鼠标移动，到文字那就变红
+            if self.single_button.check_click(pygame.mouse.get_pos()):
+                self.single_button = Button(self.single_text, Settings.RED, self.size, self.single_y)
             else:
-                again_single_button = Button("AgainSingle", Settings.WHITE, self.font, 390)
-
-            if again_double_button.check_click(pygame.mouse.get_pos()):
-                again_double_button = Button("AgainDouble", Settings.RED, self.font, 470)
+                self.single_button = Button(self.single_text, Settings.WHITE, self.size, self.single_y)
+            if self.double_button.check_click(pygame.mouse.get_pos()):
+                self.double_button = Button(self.double_text, Settings.RED, self.size, self.double_y)
             else:
-                again_double_button = Button("AgainDouble", Settings.WHITE, self.font, 470)
-
-            if home_button.check_click(pygame.mouse.get_pos()):
-                home_button = Button("Home", Settings.RED, self.font, 550)
+                self.double_button = Button(self.double_text, Settings.WHITE, self.size, self.double_y)
+            if self.exit_button.check_click(pygame.mouse.get_pos()):
+                self.exit_button = Button(self.exit_text, Settings.RED, self.size, self.exit_y)
             else:
-                home_button = Button("Home", Settings.WHITE, self.font, 550)
-
-            if exit_button.check_click(pygame.mouse.get_pos()):
-                exit_button = Button("Exit", Settings.RED, self.font, 630)
+                self.exit_button = Button(self.exit_text, Settings.WHITE, self.size, self.exit_y)
+            if self.home_button.check_click(pygame.mouse.get_pos()):
+                self.home_button = Button("Home", Settings.RED, self.size, 550)
             else:
-                exit_button = Button("Exit", Settings.WHITE, self.font, 630)
+                self.home_button = Button("Home", Settings.WHITE, self.size, 550)
 
-            again_single_button.display(self.screen)
-            again_double_button.display(self.screen)
-            home_button.display(self.screen)
-            exit_button.display(self.screen)
+            self.single_button.display(self.screen)
+            self.double_button.display(self.screen)
+            self.home_button.display(self.screen)
+            self.exit_button.display(self.screen)
             pygame.display.update()
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     Common.game_over()
-
+            # 如果左键被按下
             if pygame.mouse.get_pressed()[0]:
-                if again_single_button.check_click(pygame.mouse.get_pos()):
+
+                if self.single_button.check_click(pygame.mouse.get_pos()):
                     pygame.quit()
                     tank_war = TankWarSingle()
                     tank_war.run("S")
-                elif again_double_button.check_click(pygame.mouse.get_pos()):
+                if self.double_button.check_click(pygame.mouse.get_pos()):
                     pygame.quit()
                     tank_war = TankWarDouble()
                     tank_war.run("D")
-                elif home_button.check_click(pygame.mouse.get_pos()):
+                if self.home_button.check_click(pygame.mouse.get_pos()):
                     pygame.quit()
-                    page = StartScreen()
-                    page.start_screen()
-                elif exit_button.check_click(pygame.mouse.get_pos()):
-                    pygame.quit()
+                    start = StartScreen()
+                    start.start_screen()
+                if self.exit_button.check_click(pygame.mouse.get_pos()):
+                    Common.game_over()
 
     def win(self, winner=None):
         # 赢时的界面，包括单双人
@@ -199,7 +223,7 @@ class AfterScreen(Screen):
         else:
             game_title = self.font.render(winner + "Win!", True, Settings.WHITE)
         self.screen.blit(game_title, ((Settings.DISPLAY_WIDTH - game_title.get_width()) // 2, 200))
-        self.set_same_button()
+        self.start_screen()
 
     def single_lose(self):
         # 单人模式输了的界面
@@ -208,7 +232,7 @@ class AfterScreen(Screen):
         self.screen.blit(self.bg, (0, 0))
         game_title = self.font.render("YOU LOSE", True, Settings.RED)
         self.screen.blit(game_title, ((Settings.DISPLAY_WIDTH - game_title.get_width()) // 2, 200))
-        self.set_same_button()
+        self.start_screen()
 
 
 
