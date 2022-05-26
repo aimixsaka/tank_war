@@ -58,7 +58,7 @@ class TankSprite(BaseSprite):
         self.__remove_sprites()
         if not self.is_alive:
             return
-        if len(self.bullets) >= 3:
+        if len(self.bullets) >= 1:
             return
         if self.type == Settings.HERO:
             pygame.mixer.music.load(Settings.FIRE_MUSIC)
@@ -110,14 +110,17 @@ class TankSprite(BaseSprite):
         super(TankSprite, self).update()
 
     def boom(self):
-        pygame.mixer.music.load(Settings.BOOM_MUSIC)
-        pygame.mixer.music.play()
-        for boom in Settings.BOOMS:
-            self.image = pygame.image.load(boom)
-            time.sleep(0.05)
-            self.screen.blit(self.image, self.rect)
-        pygame.mixer.music.stop()
-        super(TankSprite, self).kill()
+        try:
+            pygame.mixer.music.load(Settings.BOOM_MUSIC)
+            pygame.mixer.music.play()
+            for boom in Settings.BOOMS:
+                self.image = pygame.image.load(boom)
+                time.sleep(0.05)
+                self.screen.blit(self.image, self.rect)
+            pygame.mixer.music.stop()
+            super(TankSprite, self).kill()
+        except pygame.error:
+            pass
 
     def kill(self):
         self.is_alive = False
@@ -238,14 +241,17 @@ class Wall(BaseSprite):
 
     def boom(self):
         # 子弹击中墙时的特效
-        pygame.mixer.music.load(Settings.BOOM_MUSIC)
-        pygame.mixer.music.play()
-        for boom in Settings.BOOMS:
-            self.image = pygame.image.load(boom)
-            time.sleep(0.07)
-            self.screen.blit(self.image, self.rect)
-        pygame.mixer.music.stop()
-        super().kill()
+        try:
+            pygame.mixer.music.load(Settings.BOOM_MUSIC)
+            pygame.mixer.music.play()
+            for boom in Settings.BOOMS:
+                self.image = pygame.image.load(boom)
+                time.sleep(0.07)
+                self.screen.blit(self.image, self.rect)
+            pygame.mixer.music.stop()
+            super().kill()
+        except pygame.error:
+            pass
 
     def kill(self):
         # 击中墙后移除墙

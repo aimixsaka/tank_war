@@ -1,8 +1,8 @@
-from screen import StartScreen
+from init_screen import InitScreen
 """
 启动入口
 """
 if __name__ == '__main__':
-    start = StartScreen()
-    start.start_screen()
+    init = InitScreen()
+    init.start()
 

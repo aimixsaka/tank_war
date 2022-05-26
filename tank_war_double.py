@@ -12,6 +12,7 @@ class TankWarDouble(TankWar):
 
     def __init__(self):
         super(TankWarDouble, self).__init__()
+        self.walls = pygame.sprite.Group()
 
     def create_sprite(self, game_type):
         """
@@ -20,7 +21,6 @@ class TankWarDouble(TankWar):
         """
         self.player1 = HeroOrEnemy(Settings.ENEMY_IMAGE_NAME, self.screen, Settings.ENEMY)
         self.player2 = HeroOrEnemy(Settings.HERO_IMAGE_NAME, self.screen, Settings.HERO)
-        self.walls = pygame.sprite.Group()
         super(TankWarDouble, self).draw_map(game_type)
 
     def check_keydown(self, event):
@@ -165,8 +165,7 @@ class TankWarDouble(TankWar):
                     self.player1.is_hit_wall = True
                     # 移出墙内
                     self.player1.move_out_wall(wall)
-        # 子弹击中、敌方坦克碰撞、敌我坦克碰撞
-        pygame.sprite.groupcollide(self.player2.bullets, self.player1.bullets, True, True)
+
         # 敌方子弹击中我方
         for bullet in self.player1.bullets:
             if pygame.sprite.collide_rect(bullet, self.player2):
@@ -184,9 +183,11 @@ class TankWarDouble(TankWar):
             self.player2.update()
         if self.player1.is_moving:
             self.player1.update()
+
         self.walls.update()
         self.player2.bullets.update()
         self.player1.bullets.update()
+
         self.player1.bullets.draw(self.screen)
         self.player2.bullets.draw(self.screen)
         self.screen.blit(self.player2.image, self.player2.rect)

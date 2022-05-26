@@ -10,19 +10,22 @@ class TankWarSingle(TankWar):
         super(TankWarSingle, self).__init__()
         self.enemies = None
         self.enemy_bullets = None
-        self.enemy_count = Settings.ENEMY_COUNT
         self.enemies_life = True
+        with open("settings", "r") as f:
+            self.enemy_count = int(f.read())
+        with open("privacy", "r") as f1:
+            self.username = f1.read()
 
     def create_sprite(self, game_type):
         """
         创建单人模式下精灵
-        包括英雄和随机5个敌人
+        包括英雄和随机个敌人
         """
         self.hero = HeroOrEnemy(Settings.HERO_IMAGE_NAME, self.screen, Settings.HERO)
         self.enemies = pygame.sprite.Group()
         self.enemy_bullets = pygame.sprite.Group()
         self.walls = pygame.sprite.Group()
-        for i in range(Settings.ENEMY_COUNT):
+        for i in range(self.enemy_count):
             direction = random.randint(0, 3)
             enemy = Enemy(Settings.ENEMY_IMAGES_SINGLE[direction], self.screen)
             enemy.direction = direction
@@ -136,11 +139,9 @@ class TankWarSingle(TankWar):
         for enemy in self.enemies:
             for bullet in self.hero.bullets:
                 if pygame.sprite.collide_rect(bullet, enemy):
-                    bullet.kill()
                     enemy.kill()
+                    bullet.kill()
                     self.enemy_count -= 1
-                    if not self.enemy_count:
-                        self.enemies_life = False
 
         # 敌方子弹击中我方
         for enemy in self.enemies:
@@ -151,6 +152,8 @@ class TankWarSingle(TankWar):
 
     def update_sprites(self):
         # 监听
+        if not self.enemy_count:
+            self.enemies_life = False
         if self.hero.is_moving:
             self.hero.update()
         self.walls.update()

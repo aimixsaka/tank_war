@@ -35,7 +35,7 @@ class Settings:
             [0, 1, 3, 3, 3, 1, 0, 0, 1, 1, 1, 0, 0, 1, 3, 3, 3, 1, 0, ],
             [0, 0, 0, 0, 0, 0, 0, 0, 1, 5, 1, 0, 0, 0, 0, 0, 0, 0, 0, ]],
         "D": [
-            [0, 0, 0, 0, 0, 0, 0, 0, 1, 5, 1, 0, 0, 0, 0, 0, 0, 0, 0, ],
+            [0, 0, 0, 0, 0, 0, 0, 0, 1, 6, 1, 0, 0, 0, 0, 0, 0, 0, 0, ],
             [0, 1, 3, 3, 3, 1, 0, 0, 1, 1, 1, 0, 0, 1, 3, 3, 3, 1, 0, ],
             [0, 1, 3, 3, 3, 1, 0, 0, 0, 0, 0, 0, 0, 1, 3, 3, 3, 1, 0, ],
             [0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, ],
@@ -89,7 +89,6 @@ class Settings:
         UP: "./resources/images/enemy/enemy2U.gif",
         DOWN: "./resources/images/enemy/enemy2D.gif"
     }
-    ENEMY_COUNT = 5
     ENEMY_SPEED_SINGLE = 1
 
     # 子弹
@@ -119,9 +118,11 @@ class Settings:
     RED = (255, 0, 0)
     GREY = (150, 150, 150)
     BG_IMG = "./resources/images/screen/tank.png"
-    BG_MUS = "./resources/musics/startbg.wav"
 
     # 输了时的音乐
     OVER_MUS = "./resources/musics/over_music.wav"
     # 预备start bgm
     NEW_START = "./resources/musics/startbgm2.wav"
+
+    # Init页背景图
+    INIT_IMG = "./resources/images/init/tank.jpg"

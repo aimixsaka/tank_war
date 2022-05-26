@@ -1,4 +1,5 @@
 import pygame
+import pymysql
 from settings import Settings
 
 
@@ -20,7 +21,19 @@ class Common:
         """
         游戏结束
         """
+        with open("privacy", "w") as f:
+            f.write("")
         pygame.quit()
         exit()
+
+    @staticmethod
+    def get_username():
+        """
+        读取用户名
+        :return:
+        """
+        with open("settings", "r") as f:
+            username = f.readlines()[1]
+        return username
 
 

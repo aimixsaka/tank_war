@@ -1,6 +1,7 @@
 import pygame
 from common import Common
 from sprites import *
+from sql_api import SqlApi
 
 
 class TankWar(object):
@@ -15,18 +16,21 @@ class TankWar(object):
         self.player2 = None
         self.player1 = None
         self.walls = None
+        self.grade = None
+        self.sql_api = SqlApi()
+        self.username = None
+        self.enemy_count = None
 
     def draw_map(self, game_type):
         """
         绘制地图
-        :return:
         """
         map_type = Settings.MAP_DICT[game_type]
         for y in range(len(map_type)):
             for x in range(len(map_type[y])):
                 if map_type[y][x] == 0:
                     continue
-                wall = Wall(Settings.WALLS[map_type[y][x]], self.screen)
+                wall = Wall(Settings.WALLS[5], self.screen) if map_type[y][x] == 6 else Wall(Settings.WALLS[map_type[y][x]], self.screen)
                 wall.rect.x = x * Settings.BOX_SIZE
                 wall.rect.y = y * Settings.BOX_SIZE
                 if map_type[y][x] == Settings.RED_WALL:
@@ -98,9 +102,22 @@ class TankWar(object):
                 # 5、更新显示
                 pygame.display.update()
                 if not self.enemies_life:
+                    grade = self.sql_api.get_grade(self.username)
+                    with open("settings", "r") as f:
+                        new_grade = int(f.read()) * 10
+                    if new_grade > grade:
+                        self.sql_api.update_grade(new_grade, self.username)
+                    pygame.quit()
                     page = AfterScreen()
                     page.win()
                 elif not self.hero.is_alive:
+                    with open("settings", "r") as f:
+                        enemies = int(f.read())
+                    grade = self.sql_api.get_grade(self.username)
+                    new_grade = (enemies - self.enemy_count) * 10
+                    if new_grade > grade:
+                        self.sql_api.update_grade(new_grade, self.username)
+                    pygame.quit()
                     page = AfterScreen()
                     page.single_lose()
 

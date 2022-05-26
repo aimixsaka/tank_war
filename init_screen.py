@@ -20,6 +20,7 @@ class InitScreen(object):
         self.num_label = None  # 设置敌人数
         self.reg_name_label = None  # 注册提示栏
         self.reg_pwd_label = None
+        self.now_num_label = None
 
         self.name_entry = None  # 输入框
         self.pwd_entry = None
@@ -78,7 +79,7 @@ class InitScreen(object):
         self.canvas.create_window(475, 220, width=200, height=20, window=self.reg_name_entry)
         self.canvas.create_window(475, 240, width=200, height=20, window=self.reg_pwd_label)
         self.canvas.create_window(475, 260, width=200, height=20, window=self.reg_pwd_entry)
-        self.canvas.create_window(475, 280, width=70, height=30, window=self.register_button)
+        self.canvas.create_window(475, 285, width=70, height=30, window=self.register_button)
 
     def check_register(self):
         name = self.reg_name_entry.get()
@@ -103,15 +104,19 @@ class InitScreen(object):
             s += "第{}名： {}     {}\n".format(n, name, grade)
             n += 1
         self.grade_label = tk.Label(self.top, text=s)
-        self.canvas.create_window(50, 50, width=300, height=600, window=self.grade_label)
+        self.canvas.create_window(80, 80, width=150, height=600, window=self.grade_label)
 
     def set(self):
         self.num_label = tk.Label(self.top, text="请输入预期的敌人数")
         self.num_entry = tk.Entry(self.top)
         self.num_button = tk.Button(self.top, text="确定", command=self.check_num)
-        self.canvas.create_window(800, 60, width=200, height=40, window=self.num_label)
-        self.canvas.create_window(800, 90, width=200, height=40, window=self.num_entry)
-        self.canvas.create_window(800, 110, width=200, height=30, window=self.num_button)
+        with open("settings", "r") as f:
+            num = f.read()
+        self.now_num_label = tk.Label(self.top, text="现敌人数： {}".format(num))
+        self.canvas.create_window(850, 20, width=200, height=40, window=self.num_label)
+        self.canvas.create_window(850, 60, width=100, height=30, window=self.num_entry)
+        self.canvas.create_window(850, 95, width=70, height=30, window=self.num_button)
+        self.canvas.create_window(850, 150, width=100, height=30, window=self.now_num_label)
 
     def check_num(self):
         num = self.num_entry.get()

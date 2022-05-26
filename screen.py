@@ -15,7 +15,7 @@ class Button(object):
         设置文字surface，并设置文字坐标
         :param text: 要显示的文本
         :param color: 文本颜色
-        :param font: 字体对象
+        :param font_size: 字体对象
         :param y: 提供的y坐标（x坐标通过计算可得
         """
         self.font_addr = pygame.font.get_default_font()
@@ -90,7 +90,7 @@ class Screen(object):
         self.double_button.display(self.screen)
         self.exit_button.display(self.screen)
 
-    def check_click_same(self):
+    def check_click(self):
         while True:
             # 监听鼠标移动，到文字那就变红
             if self.single_button.check_click(pygame.mouse.get_pos()):
@@ -146,7 +146,7 @@ class StartScreen(Screen):
         self.screen.blit(game_title, ((Settings.DISPLAY_WIDTH - game_title.get_width()) // 2, 200))
         # 加载按钮
         super().set_button()
-        super().check_click_same()
+        super().check_click()
 
 
 class AfterScreen(Screen):
@@ -197,7 +197,6 @@ class AfterScreen(Screen):
                     Common.game_over()
             # 如果左键被按下
             if pygame.mouse.get_pressed()[0]:
-
                 if self.single_button.check_click(pygame.mouse.get_pos()):
                     pygame.quit()
                     tank_war = TankWarSingle()
@@ -215,18 +214,20 @@ class AfterScreen(Screen):
 
     def win(self, winner=None):
         # 赢时的界面，包括单双人
-        pygame.mixer.music.load(Settings.BG_MUS)
+        pygame.mixer.init()
+        pygame.mixer.music.load(Settings.NEW_START)
         pygame.mixer.music.play(30)
         self.screen.blit(self.bg, (0, 0))
         if not winner:
             game_title = self.font.render("YOU WIN!", True, Settings.RED)
         else:
-            game_title = self.font.render(winner + "Win!", True, Settings.WHITE)
+            game_title = self.font.render(winner + "Win!", True, Settings.RED)
         self.screen.blit(game_title, ((Settings.DISPLAY_WIDTH - game_title.get_width()) // 2, 200))
         self.start_screen()
 
     def single_lose(self):
         # 单人模式输了的界面
+        pygame.mixer.init()
         pygame.mixer.music.load(Settings.OVER_MUS)
         pygame.mixer.music.play(30)
         self.screen.blit(self.bg, (0, 0))
